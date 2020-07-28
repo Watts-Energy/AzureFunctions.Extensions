@@ -35,7 +35,7 @@ namespace Aliencube.AzureFunctions.Extensions.OpenApi
         [FunctionName(nameof(OpenApiHttpTrigger.RenderSwaggerDocument))]
         [OpenApiIgnore]
         public static async Task<IActionResult> RenderSwaggerDocument(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "swagger/swagger.{extension}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "swagger/swagger.{extension}")] HttpRequest req,
             string extension,
             ILogger log)
         {
@@ -73,7 +73,7 @@ namespace Aliencube.AzureFunctions.Extensions.OpenApi
         [FunctionName(nameof(OpenApiHttpTrigger.RenderOpenApiDocument))]
         [OpenApiIgnore]
         public static async Task<IActionResult> RenderOpenApiDocument(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "swagger/openapi/{version}.{extension}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "swagger/openapi/{version}.{extension}")] HttpRequest req,
             string version,
             string extension,
             ILogger log)
@@ -110,7 +110,7 @@ namespace Aliencube.AzureFunctions.Extensions.OpenApi
         [FunctionName(nameof(OpenApiHttpTrigger.RenderSwaggerUIIndex))]
         [OpenApiIgnore]
         public static async Task<IActionResult> RenderSwaggerUIIndex(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "swagger/index.html")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "swagger/index.html")] HttpRequest req,
             ILogger log)
         {
             if (IsProduction())
@@ -138,7 +138,7 @@ namespace Aliencube.AzureFunctions.Extensions.OpenApi
         [FunctionName(nameof(OpenApiHttpTrigger.RenderSwaggerUI))]
         [OpenApiIgnore]
         public static Task<IActionResult> RenderSwaggerUI(
-        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "swagger")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "swagger")] HttpRequest req,
         ILogger log)
         {
             return RenderSwaggerUIIndex(req, log);
