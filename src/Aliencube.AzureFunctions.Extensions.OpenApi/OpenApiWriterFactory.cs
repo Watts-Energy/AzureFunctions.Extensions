@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 
 using Microsoft.OpenApi;
@@ -23,7 +23,7 @@ namespace Aliencube.AzureFunctions.Extensions.OpenApi
             {
                 case OpenApiFormat.Json:
                     return new OpenApiJsonWriter(writer);
-
+                        
                 case OpenApiFormat.Yaml:
                     return new OpenApiYamlWriter(writer);
 
