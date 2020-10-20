@@ -22,6 +22,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/aliencube/AzureFunctions.Extensions/master/icons/Aliencube.AzureFunctions.Extensions.DependencyInjection.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/aliencube/AzureFunctions.Extensions</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
