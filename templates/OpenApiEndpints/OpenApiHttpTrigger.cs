@@ -35,10 +35,13 @@ namespace Aliencube.AzureFunctions.Extensions.OpenApi
         [FunctionName(nameof(OpenApiHttpTrigger.RenderSwaggerDocument))]
         [OpenApiIgnore]
         public static async Task<IActionResult> RenderSwaggerDocument(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "swagger.{extension}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "swagger/swagger.{extension}")] HttpRequest req,
             string extension,
             ILogger log)
         {
+            if (IsProduction())
+                return new NotFoundResult();
+
             log.LogInformation($"swagger.{extension} was requested.");
 
             var result = await context.Document
@@ -70,11 +73,14 @@ namespace Aliencube.AzureFunctions.Extensions.OpenApi
         [FunctionName(nameof(OpenApiHttpTrigger.RenderOpenApiDocument))]
         [OpenApiIgnore]
         public static async Task<IActionResult> RenderOpenApiDocument(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "openapi/{version}.{extension}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "swagger/openapi/{version}.{extension}")] HttpRequest req,
             string version,
             string extension,
             ILogger log)
         {
+            if (IsProduction())
+                return new NotFoundResult();
+
             log.LogInformation($"{version}.{extension} was requested.");
 
             var result = await context.Document
@@ -101,19 +107,22 @@ namespace Aliencube.AzureFunctions.Extensions.OpenApi
         /// <param name="req"><see cref="HttpRequest"/> instance.</param>
         /// <param name="log"><see cref="ILogger"/> instance.</param>
         /// <returns>Swagger UI in HTML.</returns>
-        [FunctionName(nameof(OpenApiHttpTrigger.RenderSwaggerUI))]
+        [FunctionName(nameof(OpenApiHttpTrigger.RenderSwaggerUIIndex))]
         [OpenApiIgnore]
-        public static async Task<IActionResult> RenderSwaggerUI(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "swagger/ui")] HttpRequest req,
+        public static async Task<IActionResult> RenderSwaggerUIIndex(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "swagger/index.html")] HttpRequest req,
             ILogger log)
         {
+            if (IsProduction())
+                return new NotFoundResult();
+
             log.LogInformation($"SwaggerUI page was requested.");
 
             var result = await context.SwaggerUI
                                       .AddMetadata(context.OpenApiInfo)
                                       .AddServer(req, context.HttpSettings.RoutePrefix)
                                       .BuildAsync()
-                                      .RenderAsync("swagger.json", context.GetSwaggerAuthKey())
+                                      .RenderAsync("swagger/openapi/1.json", context.GetSwaggerAuthKey())
                                       .ConfigureAwait(false);
 
             var content = new ContentResult()
@@ -124,6 +133,24 @@ namespace Aliencube.AzureFunctions.Extensions.OpenApi
             };
 
             return content;
+        }
+
+        [FunctionName(nameof(OpenApiHttpTrigger.RenderSwaggerUI))]
+        [OpenApiIgnore]
+        public static Task<IActionResult> RenderSwaggerUI(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "swagger")] HttpRequest req,
+        ILogger log)
+        {
+            return RenderSwaggerUIIndex(req, log);
+        }
+
+        public static bool IsProduction()
+        {
+            const string ProductionEnvironmentName = "Production";
+            const string EnvironmentVariableName = "AZURE_FUNCTIONS_ENVIRONMENT";
+
+            return ProductionEnvironmentName
+                .Equals(System.Environment.GetEnvironmentVariable(EnvironmentVariableName));
         }
     }
 }

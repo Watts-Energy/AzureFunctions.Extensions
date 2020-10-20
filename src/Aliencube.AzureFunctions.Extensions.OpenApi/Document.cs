@@ -134,6 +134,7 @@ namespace Aliencube.AzureFunctions.Extensions.OpenApi
             this._document.Paths = paths;
             this._document.Components.Schemas = this._helper.GetOpenApiSchemas(methods, namingStrategy);
             this._document.Components.SecuritySchemes = this._helper.GetOpenApiSecuritySchemes();
+            this._document.SecurityRequirements = this._helper.GetOpenApiSecurityRequirements();
 
             return this;
         }

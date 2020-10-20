@@ -208,21 +208,48 @@ namespace Aliencube.AzureFunctions.Extensions.OpenApi
             return schemas;
         }
 
+        const string ApiKeyHeaderName = "Authorization";
+
         /// <inheritdoc />
         public Dictionary<string, OpenApiSecurityScheme> GetOpenApiSecuritySchemes()
         {
             var scheme = new OpenApiSecurityScheme()
             {
-                Name = "x-functions-key",
+                Name = ApiKeyHeaderName,
+                Description = $"API Key / JWT bearer authorization header<br><br>Example #1:<br>api_key some_api_key<br><br>Example #2:<br>Bearer some_access_token<br><br>",
                 Type = SecuritySchemeType.ApiKey,
                 In = ParameterLocation.Header
             };
             var schemes = new Dictionary<string, OpenApiSecurityScheme>()
                               {
-                                  { "authKey", scheme }
+                                  { ApiKeyHeaderName, scheme }
                               };
 
             return schemes;
+        }
+
+        public IList<OpenApiSecurityRequirement> GetOpenApiSecurityRequirements()
+        {
+            return new List<OpenApiSecurityRequirement>()
+            {
+                new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Name = ApiKeyHeaderName,
+                                Type = SecuritySchemeType.ApiKey,
+                                In = ParameterLocation.Header,
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = ApiKeyHeaderName
+                                },
+                            },
+                            new string[] {}
+                        }
+                    }
+            };
         }
 
         private string FilterRoute(string route)
