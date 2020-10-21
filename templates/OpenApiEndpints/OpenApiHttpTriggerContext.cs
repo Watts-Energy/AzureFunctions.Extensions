@@ -1,3 +1,4 @@
+#nullable disable
 using System;
 using System.Reflection;
 
@@ -103,3 +104,4 @@ namespace Aliencube.AzureFunctions.Extensions.OpenApi
         }
     }
 }
+#nullable restore
