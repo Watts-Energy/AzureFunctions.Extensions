@@ -1,3 +1,4 @@
+#nullable disable
 using System.Reflection;
 
 using Aliencube.AzureFunctions.Extensions.OpenApi.Abstractions;
@@ -83,3 +84,4 @@ namespace Aliencube.AzureFunctions.Extensions.OpenApi
         string GetSwaggerAuthKey(string key = "OpenApi__ApiKey");
     }
 }
+#nullable restore
